@@ -19,7 +19,9 @@ case class WebCrawler(workers: Int, maxLinks: Int, initialWork: List[WebLink]) {
     })
 
     startLatch.countDown()
+  }
 
+  def shutdown(): Unit = {
     exec.shutdown()
   }
 
@@ -35,8 +37,9 @@ object WebCrawler extends App {
       }
     })
 
-    val crawler = new WebCrawler(4, 50, List(WebLink("http://techcrunch.com")))
+    val crawler = new WebCrawler(4, 50, List(WebLink("http://news.ycombinator.com")))
     crawler.start()
+    crawler.shutdown()
   }
 
 }
