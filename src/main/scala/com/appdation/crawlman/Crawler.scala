@@ -1,15 +1,17 @@
 package com.appdation.crawlman
 
-import java.util.concurrent.BlockingQueue
+import java.util.concurrent.{CountDownLatch, BlockingQueue}
 import org.fusesource.jansi.Ansi._
 import org.fusesource.jansi.Ansi.Color._
 
 import scala.xml.{Elem, XML}
 
-case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink]) extends Runnable {
+case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink], latch: CountDownLatch) extends Runnable {
 
   override def run(): Unit = {
     println(ansi().fg(YELLOW).a(s"$crawlerId: Starting worker thread...").reset())
+
+    latch.await()
 
     while(true){
       processLink(workQueue.take())
@@ -50,7 +52,7 @@ case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink]) extends Ru
       case Some(h) => {
         val newLinks = getLinks(h)
 
-        newLinks.foreach(l => workQueue.put(WebLink(l)))
+        newLinks.foreach(l => workQueue.offer(WebLink(l)))
       }
       case _ => println(ansi().fg(RED).a(s"$crawlerId: ${link.link} cannot be parsed...").reset())
     }

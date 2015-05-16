@@ -1,6 +1,6 @@
 package com.appdation.crawlman
 
-import java.util.concurrent.{LinkedBlockingQueue, Executors}
+import java.util.concurrent.{CountDownLatch, LinkedBlockingQueue, Executors}
 
 import org.fusesource.jansi.AnsiConsole
 
@@ -12,9 +12,13 @@ case class WebCrawler(workers: Int, maxLinks: Int, initialWork: List[WebLink]) {
   def start(): Unit = {
     initialWork.foreach(w => workQueue.put(w))
 
+    val startLatch = new CountDownLatch(1)
+
     (1 to workers).foreach(i => {
-      exec.execute(new Crawler(i, workQueue))
+      exec.execute(new Crawler(i, workQueue, startLatch))
     })
+
+    startLatch.countDown()
 
     exec.shutdown()
   }
