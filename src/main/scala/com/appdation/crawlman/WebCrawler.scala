@@ -6,7 +6,7 @@ import org.fusesource.jansi.AnsiConsole
 
 case class WebCrawler(workers: Int, maxLinks: Int, initialWork: List[WebLink]) {
 
-  private val exec = Executors.newFixedThreadPool(workers)
+  private val crawlerPool = Executors.newFixedThreadPool(workers)
   private val workQueue = new LinkedBlockingQueue[WebLink](maxLinks)
 
   def start(): Unit = {
@@ -15,14 +15,14 @@ case class WebCrawler(workers: Int, maxLinks: Int, initialWork: List[WebLink]) {
     val startLatch = new CountDownLatch(1)
 
     (1 to workers).foreach(i => {
-      exec.execute(new Crawler(i, workQueue, startLatch))
+      crawlerPool.execute(new Crawler(i, workQueue, startLatch))
     })
 
     startLatch.countDown()
   }
 
   def shutdown(): Unit = {
-    exec.shutdown()
+    crawlerPool.shutdown()
   }
 
 }
@@ -37,7 +37,7 @@ object WebCrawler extends App {
       }
     })
 
-    val crawler = new WebCrawler(4, 50, List(WebLink("http://news.ycombinator.com")))
+    val crawler = new WebCrawler(8, 300, List(WebLink("http://news.ycombinator.com")))
     crawler.start()
     crawler.shutdown()
   }

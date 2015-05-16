@@ -6,7 +6,7 @@ import org.fusesource.jansi.Ansi.Color._
 
 import scala.xml.{Elem, XML}
 
-case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink], latch: CountDownLatch) extends Runnable {
+final case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink], latch: CountDownLatch) extends Runnable {
 
   override def run(): Unit = {
     println(ansi().fg(YELLOW).a(s"$crawlerId: Starting worker thread...").reset())
@@ -21,10 +21,10 @@ case class Crawler(crawlerId: Int, workQueue: BlockingQueue[WebLink], latch: Cou
   private def processLink(link: WebLink): Unit = {
     println(ansi().fg(GREEN).a(s"$crawlerId: ${link.link}").reset())
 
-    val links = CrawlerBrowser(link.link).getLinks()
+    val links = CrawlerBrowser(link.link).getLinks()//.union(cache)
 
-    links.foreach(s => println(s))
-//    links.foreach(l => workQueue.offer(WebLink(l)))
+    links.foreach(s => println(ansi().fg(YELLOW).a(s"$crawlerId: NEW LINK $s")))
+    links.foreach(l => workQueue.offer(WebLink(l)))
   }
 
 }

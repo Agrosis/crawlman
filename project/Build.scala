@@ -19,6 +19,9 @@ object Build extends Build {
       libraryDependencies   += "org.jsoup" % "jsoup" % "1.7.2",
       libraryDependencies   += "org.fusesource.jansi" % "jansi" % "1.11",
       libraryDependencies   += "org.scala-lang.modules" %% "scala-xml" % "1.0.3",
+      libraryDependencies   += "mysql"                  %  "mysql-connector-java"   % "5.1.33",
+      libraryDependencies   += "com.typesafe.slick"    %%  "slick"                  % "2.1.0",
+      libraryDependencies   += "org.flywaydb"           % "flyway-core"             % "3.2.1",
       updateOptions         := updateOptions.value.withCachedResolution(true)
     )
 
