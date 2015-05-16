@@ -18,6 +18,7 @@ object Build extends Build {
       resolvers             += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/",
       libraryDependencies   += "com.plasmaconduit" %% "edge" % "0.15.0",
       libraryDependencies   += "org.fusesource.jansi" % "jansi" % "1.11",
+      libraryDependencies   += "org.scala-lang.modules" %% "scala-xml" % "1.0.3",
       updateOptions         := updateOptions.value.withCachedResolution(true)
     )
 
