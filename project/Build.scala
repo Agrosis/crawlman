@@ -16,7 +16,7 @@ object Build extends Build {
       resolvers             ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo),
       resolvers             += "Plasma Conduit Repository" at "http://dl.bintray.com/plasmaconduit/releases",
       resolvers             += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/",
-      libraryDependencies   += "com.plasmaconduit" %% "edge" % "0.15.0",
+      libraryDependencies   += "io.netty" % "netty-all" % "4.0.26.Final",
       libraryDependencies   += "org.fusesource.jansi" % "jansi" % "1.11",
       libraryDependencies   += "org.scala-lang.modules" %% "scala-xml" % "1.0.3",
       updateOptions         := updateOptions.value.withCachedResolution(true)
