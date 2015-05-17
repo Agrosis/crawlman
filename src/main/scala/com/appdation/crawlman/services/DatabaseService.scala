@@ -35,7 +35,7 @@ object DatabaseService {
 
   def create(): Validation[Throwable, DatabaseService] = {
     for (
-      config <- JsonConfig.loadFromFile("./conf/crawlman.conf");
+      config <- JsonConfig.loadFromFile("./conf/crawlman.json");
       driver <- config.getString("db.driver");
       url <- config.getString("db.url");
       username <- config.getString("db.user");
