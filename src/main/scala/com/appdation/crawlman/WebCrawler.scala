@@ -48,12 +48,14 @@ object WebCrawler extends App {
       url <- config.getString("db.url");
       username <- config.getString("db.user");
       password <- config.getString("db.password");
-      initialLink <- config.getString("crawler.initial")
+      initialLink <- config.getString("crawler.initial");
+      crawlerThreads <- config.getLong("crawler.threads");
+      maxLinks <- config.getLong("crawler.maxQueueSize")
     ) yield {
       val db = DatabaseService(driver, url, username, password)
       db.migrate()
 
-      val crawler = new WebCrawler(4, 200, CrawlerServices(db), List(WebLink(initialLink)))
+      val crawler = new WebCrawler(crawlerThreads.toInt, maxLinks.toInt, CrawlerServices(db), List(WebLink(initialLink)))
       crawler.start()
       crawler.shutdown()
     }
