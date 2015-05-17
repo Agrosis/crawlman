@@ -1,8 +1,5 @@
 package com.appdation.crawlman
 
-import java.math.BigInteger
-import java.security.MessageDigest
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -26,13 +23,6 @@ case class CrawlerBrowser(requestUrl: String) {
 
   def html(): Option[String] = {
     document.map(_.html())
-  }
-
-  def htmlDigest(): Option[String] = {
-    html().map(s => {
-      val md = MessageDigest.getInstance("MD2").digest(s.getBytes())
-      new BigInteger(1, md).toString(16)
-    })
   }
 
   def links(): List[String] = {
