@@ -2,7 +2,8 @@ package com.appdation.crawlman
 
 import java.util.concurrent._
 import com.appdation.crawlman.services.{CrawlerServices, DatabaseService}
-import com.plasmaconduit.validation.Success
+import com.plasmaconduit.jsonconfig.JsonConfig
+import com.plasmaconduit.validation.{Failure, Success}
 import org.fusesource.jansi.AnsiConsole
 import org.fusesource.jansi.Ansi._
 import org.fusesource.jansi.Ansi.Color._
@@ -41,15 +42,25 @@ object WebCrawler extends App {
       }
     })
 
-    DatabaseService.create() match {
-      case Success(db) => {
-        db.migrate()
+    val res = for (
+      config <- JsonConfig.loadFromFile("./conf/crawlman.json");
+      driver <- config.getString("db.driver");
+      url <- config.getString("db.url");
+      username <- config.getString("db.user");
+      password <- config.getString("db.password");
+      initialLink <- config.getString("crawler.initial")
+    ) yield {
+      val db = DatabaseService(driver, url, username, password)
+      db.migrate()
 
-        val crawler = new WebCrawler(4, 200, CrawlerServices(db), List(WebLink("http://news.ycombinator.com")))
-        crawler.start()
-        crawler.shutdown()
-      }
-      case _ => println(ansi().fg(RED).a(s"Unable to start web crawler because there was an error in database configuration.").reset())
+      val crawler = new WebCrawler(4, 200, CrawlerServices(db), List(WebLink(initialLink)))
+      crawler.start()
+      crawler.shutdown()
+    }
+
+    res match {
+      case Failure(_) => println(ansi().fg(RED).a(s"Unable to start web crawler. Error in crawler configuration.").reset())
+      case _ => {}
     }
   }
 

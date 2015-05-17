@@ -30,17 +30,3 @@ final case class DatabaseService(driver: String, url: String, username: String, 
   }
 
 }
-
-object DatabaseService {
-
-  def create(): Validation[Throwable, DatabaseService] = {
-    for (
-      config <- JsonConfig.loadFromFile("./conf/crawlman.json");
-      driver <- config.getString("db.driver");
-      url <- config.getString("db.url");
-      username <- config.getString("db.user");
-      password <- config.getString("db.password")
-    ) yield DatabaseService(driver, url, username, password)
-  }
-
-}
