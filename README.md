@@ -5,7 +5,7 @@ A web crawler that counts up links.
 
 Setup
 ---------------------------------------------
-In the project folder, just create a directory titled `conf` and put `crawlman.json` in it:
+In the crawlman folder, just create a directory titled `conf` and put `crawlman.json` in it:
 
 ```
 {
